@@ -1,0 +1,12 @@
+([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);
+
+'\1','\2','\3','\4','\5','\6','\7','\8',
+
+
+VALUES \('[^']*','[^']*','[^']*','[^']*','[^']*','[^']*','[^']*',[^']
+
+
+
+^(.*)$
+
+INSERT INTO teikningar_teikning (dags,eigandi,stadur,sveitarfelag,flokkur,flokkur_nanar,skipulag,teikning,frumrit,afrit,fj_blada) VALUES (\1);
