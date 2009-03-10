@@ -1,3 +1,5 @@
+# coding=ISO-8859-1
+
 ## Copyright (c) 2008, Kapil Thangavelu <kapil.foss@gmail.com>
 ## All rights reserved.
 
@@ -47,7 +49,7 @@ Date: 11/29/2008
 License: BSD
 """
 
-import math, os, optparse, sys
+import math, os, optparse, sys, glob, logging
 from PIL import Image
 
 xml_template = '''\
@@ -58,6 +60,76 @@ xml_template = '''\
 </Image>       
 '''
 
+html_template = '''\
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+<title>Seadragon Ajax</title>
+<script type="text/javascript" src="http://seadragon.com/ajax/0.8/seadragon-min.js"></script>           
+<script type="text/javascript">
+    var viewer = null;
+    function init() {
+        viewer = new Seadragon.Viewer("container");
+        viewer.openDzi("generated_images/%(name)s.dzi");
+    }
+    Seadragon.Utils.addEvent(window, "load", init);
+</script>
+<style type="text/css">
+body {
+    margin: 0px;
+}
+#container {
+    width: 800px;
+    height: 600px;
+    background-color: Black;
+}
+a {
+    font-family: Verdana;
+    font-size: small;
+    text-decoration: none;
+    background-color: #F0F0F0;
+    line-height: 24px;
+    color: #253649;
+}
+.style1 {
+    background-color: #FAF8B6;
+}
+.style2 {
+    font-size: small;
+    font-family: Verdana;
+}
+.style3 {
+    border: 1px solid #F5F270;
+}
+.style4 {
+    color: #444304;
+    background-color: #F5F270;
+}
+</style>
+</head>
+
+<body>
+<span style="font-size: large; font-family: Verdana; background-color: #F0F0F0;">%(name)s</span>
+
+<div id="container">
+</div>
+<ul>
+    <li>
+        Til að súmma:
+        <ul>
+            <li>smella á ( + ) ( - ) takkana</li>
+            <li>smella og shift-smella á myndflötinn</li>
+            <li>snúa músarhjólinu með bendilinn yfir myndinni</li>
+        </ul>
+    </li>
+    <li>Þriðji hnappurinn (mynd af húsi) birtir heildarmyndina (þægilegt þegar komið í djúpt súmm)</li>
+    <li>Með fjórða hnappnum má fá myndina til að fylla út í gluggann.</li>
+</ul>
+</body>
+</html>
+'''
 
 filter_map = {
     'cubic' : Image.CUBIC,
@@ -155,22 +227,29 @@ class PyramidComposer( object ):
         return self.levels
     
     def save( self, parent_directory, name ):
-        dir_path = ensure( os.path.join( ensure( expand( parent_directory ) ), "%s_files"%name ) )
-
-        # store images
-        for n in range( self.levels + 1 ):
-            level_dir = ensure( os.path.join( dir_path, str( n ) ) )
-            level_image = self.getLevelImage( n )
-            for ( col, row), box in self.iterTiles( n ):
-                tile = level_image.crop( map(int, box) )
-                tile_path = os.path.join( level_dir, "%s_%s.%s"%( col, row, self.format ) )
-                tile_file = open( tile_path, 'wb+')
-                tile.save( tile_file )
-
-        # store dzi file
-        fh = open( os.path.join( parent_directory, "%s.dzi"%(name)), 'w+' )
-        fh.write( xml_template%( self.__dict__ ) )
-        fh.close()
+        if not os.path.exists( os.path.join( parent_directory, "%s.dzi"%(name)) ):
+            ensure( os.path.join( ensure( expand( parent_directory ) ), "generated_images" ) )
+            dir_path = ensure( os.path.join( ensure( expand( parent_directory ) ), "generated_images/%s_files"%name ) )
+    
+            # store images
+            for n in range( self.levels + 1 ):
+                level_dir = ensure( os.path.join( dir_path, str( n ) ) )
+                level_image = self.getLevelImage( n )
+                for ( col, row), box in self.iterTiles( n ):
+                    tile = level_image.crop( map(int, box) )
+                    tile_path = os.path.join( level_dir, "%s_%s.%s"%( col, row, self.format ) )
+                    tile_file = open( tile_path, 'wb+')
+                    tile.save( tile_file )
+    
+            # store dzi file
+            fh = open( os.path.join( parent_directory+"/generated_images", "%s.dzi"%(name)), 'w+' )
+            fh.write( xml_template%( self.__dict__ ) )
+            fh.close()
+            
+            # write html file for preview
+            fh = open( os.path.join( parent_directory, "%s.html"%(name)), 'w+' )
+            fh.write( html_template%{'name':name} )
+            fh.close()
 
     def info( self ):
         for n in range( self.levels +1 ):
@@ -178,6 +257,17 @@ class PyramidComposer( object ):
             for (col, row ), box in self.iterTiles( n ):
                 if n > self.levels*.75  and n < self.levels*.95:
                     print  "  ", "%s/%s_%s"%(n, col, row ), box 
+
+class ImageResizer( object ):
+    def __init__(self, img_size=128, format="jpg", filter=None):
+        self.size = img_size, img_size
+        self.format = format
+        self.filter = filter
+        
+    def save( self, image, parent_directory, name ):
+        self.dir_path = ensure( expand( parent_directory ) )
+        image.thumbnail(self.size, Image.ANTIALIAS)
+        image.save( os.path.join(self.dir_path, name) + ".jpg", "JPEG")
         
 def expand( d):
     return os.path.abspath( os.path.expanduser( os.path.expandvars( d ) ) )
@@ -195,12 +285,14 @@ def main( ):
                       help = 'Set the quality level of the image')
     parser.add_option('-f', '--format', dest="format",
                       default="jpg", help = 'Set the Image Format (jpg or png)')
-    parser.add_option('-n', '--name', dest="name", help = 'Set the name of the output directory/dzi')
+#    parser.add_option('-n', '--name', dest="name", help = 'Set the name of the output directory/dzi')
     parser.add_option('-p', '--path', dest="path", help = 'Set the path of the output directory/dzi')
     parser.add_option('-t', '--transform', dest="transform", default="antialias",
                       help = 'Type of Transform (bicubic, nearest, antialias, bilinear')
     parser.add_option('-d', '--debug', dest="debug", action="store_true", default=False,
                       help = 'Output debug information relating to box makeup')
+    parser.add_option('-g', '--glob', dest='glob', action='store_true', default=False, 
+                      help = 'glob the given file path')
 
     (options, args ) = parser.parse_args()
 
@@ -209,25 +301,52 @@ def main( ):
         sys.exit(1)
     image_path = expand( args[0] )
     
-    if not os.path.exists( image_path ):
-        print  "Invalid File", image_path
-        sys.exit(1)
+    
+    
+    if options.glob:
+        if len( glob.glob(image_path) ) < 1:
+            print  "No files found that match the given pattern", image_path
+            sys.exit(1)
+        else:
+            image_paths = glob.glob(image_path)
+    else:
+        if not os.path.exists( image_path ):
+            print  "Invalid File", image_path
+            sys.exit(1)
+        else:
+            image_paths = [image_path]
         
-    if not options.name:
-        options.name = os.path.splitext( os.path.basename( image_path ) )[0]
-    if not options.path:
-        options.path = os.path.dirname( image_path )
     if options.transform and options.transform in filter_map:
         options.transform = filter_map[ options.transform ]
 
-    img = Image.open( image_path )
-    composer = PyramidComposer( img, tile_size=options.size, format=options.format, filter=options.transform )
+#    if not options.name:
+#        options.name = os.path.splitext( os.path.basename( img_path ) )[0]
+    if not options.path:
+        options.path = os.path.dirname( image_paths[0] )
+    ensure( options.path )        
 
-    if options.debug:
-        composer.info()
-        sys.exit()
-
-    composer.save( options.path, options.name )
+    LOG_FILENAME = options.path+'/error.log'
+    logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG,)
+    
+    thumb = ImageResizer( img_size=256, format=options.format, filter=options.transform )
+    medium = ImageResizer( img_size=512, format=options.format, filter=options.transform )
+    for img_path in image_paths:
+        try:
+            name = os.path.splitext( os.path.basename( img_path ) )[0]
+            img = Image.open( img_path )
+            composer = PyramidComposer( img, tile_size=options.size, format=options.format, filter=options.transform )
+        
+            if options.debug:
+                composer.info()
+                sys.exit()
+        
+            composer.save( options.path+'/dzi', name )
+                
+            medium.save( img, options.path+'/medium', name )
+            
+            thumb.save( img, options.path+'/thumb', name )
+        except:
+            logging.error('error processing ' + name)
     
 if __name__ == '__main__':
     main()
