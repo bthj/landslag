@@ -47,6 +47,9 @@ http://code.google.com/p/open-zoom/source/browse/trunk/src/main/python/deepzoom/
 Author: Kapil Thangavelu
 Date: 11/29/2008
 License: BSD
+
+Modified by bthj.is to handle glob patterns and to create thumb and medium sized previews
+http://code.google.com/p/landslag/source/browse/trunk/landslag/src/alaska/tileCutter/seadragon.py
 """
 
 import math, os, optparse, sys, glob, logging
@@ -227,7 +230,7 @@ class PyramidComposer( object ):
         return self.levels
     
     def save( self, parent_directory, name ):
-        if not os.path.exists( os.path.join( parent_directory, "%s.dzi"%(name)) ):
+        if not os.path.exists( os.path.join( parent_directory+"/generated_images", "%s.dzi"%(name)) ):
             ensure( os.path.join( ensure( expand( parent_directory ) ), "generated_images" ) )
             dir_path = ensure( os.path.join( ensure( expand( parent_directory ) ), "generated_images/%s_files"%name ) )
     
@@ -319,8 +322,6 @@ def main( ):
     if options.transform and options.transform in filter_map:
         options.transform = filter_map[ options.transform ]
 
-#    if not options.name:
-#        options.name = os.path.splitext( os.path.basename( img_path ) )[0]
     if not options.path:
         options.path = os.path.dirname( image_paths[0] )
     ensure( options.path )        
