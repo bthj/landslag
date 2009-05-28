@@ -10,7 +10,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'C:/eclipse/pyWorkspace/alaska/src/alaska/sqlite3.db'             # Or path to database file if using sqlite3.
+DATABASE_NAME = 'D:/eclipseWorkspace/alaska/src/alaska/sqlite3.db'             # Or path to database file if using sqlite3.
 DATABASE_USER = ''             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
@@ -80,3 +80,6 @@ INSTALLED_APPS = (
     'alaska.teikningar',
     'django.contrib.admin'
 )
+
+# what dir to get the scan file list from, os.listdir is run on this in admin.py
+SCAN_FILES_DIR = 'E:/backup/www/bthj.is/alaska/teikningar'
