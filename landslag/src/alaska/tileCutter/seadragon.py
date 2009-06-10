@@ -329,7 +329,7 @@ def main( ):
     LOG_FILENAME = options.path+'/error.log'
     logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG,)
     
-    thumb = ImageResizer( img_size=256, format=options.format, filter=options.transform )
+    thumb = ImageResizer( img_size=128, format=options.format, filter=options.transform )
     medium = ImageResizer( img_size=512, format=options.format, filter=options.transform )
     for img_path in image_paths:
         try:

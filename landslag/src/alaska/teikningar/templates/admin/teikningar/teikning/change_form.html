@@ -1,0 +1,11 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_modify adminmedia teikning_tags %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript" src="http://seadragon.com/ajax/0.8/seadragon-min.js"></script>
+{% endblock %}
+
+{% block form_top %}
+	{% if object_id %}{% display_scans object_id %}{% endif %}
+{% endblock %}
