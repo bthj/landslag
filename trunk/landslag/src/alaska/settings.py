@@ -69,7 +69,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    'C:/eclipse/pyWorkspace/alaskatemplates'
+    # 'C:/eclipse/pyWorkspace/alaskatemplates'
 )
 
 INSTALLED_APPS = (
@@ -81,5 +81,10 @@ INSTALLED_APPS = (
     'django.contrib.admin'
 )
 
+STATIC_DOC_ROOT = 'E:/teikningar/vinnsla/RVK/Mappa4/unnid'
+
 # what dir to get the scan file list from, os.listdir is run on this in admin.py
 SCAN_FILES_DIR = 'E:/backup/www/bthj.is/alaska/teikningar'
+LJOSMYND_FILES_DIR = 'E:/ljosmyndirExport/2008__Langisjor'
+FRASOGN_FILES_DIR = 'D:/media/Alaska'
+MYNDBAND_FILES_DIR = 'F:/videoExport'

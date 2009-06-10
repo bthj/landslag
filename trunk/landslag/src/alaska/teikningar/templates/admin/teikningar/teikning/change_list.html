@@ -1,0 +1,14 @@
+# coding=UTF-8
+{% extends "admin/change_list.html" %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript">
+$(document).ready(function(){
+	var categoryMap = {'L01':'L1 einb&yacute;lish&uacute;sal&oacute;&eth;','L02':'L2 ra&eth;h&uacute;sal&oacute;&eth;','L03':'L3 fj&ouml;lb&yacute;lish&uacute;sal&oacute;&eth;','L04':'L4 almenningsgar&eth;ur','L05':'L5 &uacute;tivistarsv&aelig;&eth;i n&aelig;r','L06':'L6 &uacute;tivistarsv&aelig;&eth;i fjar','L07':'L7 sk&oacute;la-leiksk&oacute;lal&oacute;&eth;ir','L08':'L8 stofnanir anna&eth;','L09':'L09 l&oacute;&eth;ir vi&eth; atvinnuh&uacute;sn&aelig;&eth;i','L10':'L10 anna&eth;'};
+	$('#changelist-filter li a[href*=flokkur=]').each(function(i){
+		jQuery(this).html( categoryMap[jQuery(this).html()] )
+	});
+});
+</script>
+{% endblock %}

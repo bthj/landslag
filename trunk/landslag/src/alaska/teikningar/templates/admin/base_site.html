@@ -1,0 +1,16 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'Django site admin' %}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">ALASKA vefstj&oacute;rn</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
