@@ -1,5 +1,5 @@
 from django import template
-from teikningar import models
+from alaska.teikningar import models
 
 register = template.Library()
 

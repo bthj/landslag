@@ -296,6 +296,8 @@ def main( ):
                       help = 'Output debug information relating to box makeup')
     parser.add_option('-g', '--glob', dest='glob', action='store_true', default=False, 
                       help = 'glob the given file path')
+    parser.add_option('-m', '--mode', dest="mode", default=False, 
+                      help = "Specify what type of image to render: thumb, medium or dzi - all types are renderd if mode is not given.")
 
     (options, args ) = parser.parse_args()
 
@@ -341,11 +343,19 @@ def main( ):
                 composer.info()
                 sys.exit()
         
-            composer.save( options.path+'/dzi', name )
+            if options.mode:
+                if options.mode == 'dzi':
+                    composer.save( options.path+'/dzi', name )
+                if options.mode == 'medium':
+                    medium.save( img, options.path+'/medium', name )
+                if options.mode == 'thumb':
+                    thumb.save( img, options.path+'/thumb', name )
+            else:
+                composer.save( options.path+'/dzi', name )
+                    
+                medium.save( img, options.path+'/medium', name )
                 
-            medium.save( img, options.path+'/medium', name )
-            
-            thumb.save( img, options.path+'/thumb', name )
+                thumb.save( img, options.path+'/thumb', name )
         except:
             logging.error('error processing ' + name)
     
