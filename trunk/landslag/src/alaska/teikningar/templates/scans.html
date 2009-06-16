@@ -27,7 +27,7 @@
 		border: 5px solid black;
 	}
 	.inactive-scan {
-		border: 5px solid gray;
+		border: 5px solid lightgray;
 	}
 </style>
 
@@ -46,17 +46,15 @@ var dziDiv = document.getElementById('scan-dzi');
 var viewer = null;
 
 function doOpen( scanName, anchor ) {
-	
-	var xmlPath = "/site_media/dzi/generated_images/" + scanName + ".dzi";
-	
-	viewer.openDzi(xmlPath);
-
 	if( anchor ) {
 		window.location.hash = "#" + scanName;
 	}
+	
+	var xmlPath = "/site_media/dzi/generated_images/" + scanName + ".dzi";
+	viewer.openDzi(xmlPath);
 
 	$("#scan-wrapper img").removeClass("active-scan").addClass("inactive-scan");
-	$("#scan-wrapper img[src*=" + scanName +"]").removeClass("inactive-scan").addClass("active-scan");
+	$("#scan-wrapper img[src$=/site_media/thumb/" + scanName +".jpg]").removeClass("inactive-scan").addClass("active-scan");
 }
 function seadragonInit() {
 	viewer = new Seadragon.Viewer(dziDiv);

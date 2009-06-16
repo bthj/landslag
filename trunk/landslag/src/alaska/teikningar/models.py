@@ -1,4 +1,5 @@
-# coding=UTF-8
+#!python
+#coding=UTF-8
 
 from django.db import models
 import os
@@ -6,11 +7,11 @@ from django.conf import settings
 
 class Teikning(models.Model):
     dags = models.DateField('Dagsetning')
-    eigandi = models.CharField('Eigandi', max_length=50, blank=True)
+    eigandi = models.CharField('Eigandi', max_length=255, blank=True)
     stadur = models.CharField('Staður', max_length=50, blank=True)
     sveitarfelag = models.CharField('Sveitarfélag', max_length=50, blank=True)
     flokkur = models.CharField('Flokkur', max_length=5, blank=True)
-    flokkur_nanar = models.CharField('Flokkur nánar', max_length=50, blank=True)
+    flokkur_nanar = models.CharField('Flokkur nánar', max_length=255, blank=True)
     skipulag = models.CharField('Skipulag', max_length=50, blank=True)
     teikning = models.CharField('Teikning', max_length=50, blank=True)
     frumrit = models.BooleanField('Frumrit', blank=True)
@@ -18,6 +19,8 @@ class Teikning(models.Model):
     fj_blada = models.IntegerField('Fjöldi blaða', blank=True)
     def __unicode__(self):
         return str(self.dags) + ', ' + self.eigandi + ', ' + self.stadur 
+    def dags_formatted(self):
+        return self.dags.strftime("%Y-%m-%d")
     
     class Meta:
         verbose_name_plural = "Teikningar"

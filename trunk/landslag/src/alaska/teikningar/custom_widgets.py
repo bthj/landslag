@@ -8,7 +8,7 @@ class SelectWidgetAuxiliary():
     @classmethod
     def getFileListRegisteredInDB(cls, modelObject, modelColumn):
         scan_list = [eval("r."+modelColumn) for r in modelObject.objects.all()]
-        return scan_list
+        return sorted(scan_list)
     
     @classmethod
     def getFileListFromFilesystem(cls, filesDir, truncateCount):
@@ -17,7 +17,7 @@ class SelectWidgetAuxiliary():
         for f in files:
             if os.path.isfile(os.path.join(filesDir,f)):
                 scansList.append(f[:-truncateCount]) 
-        return scansList
+        return sorted(scansList)
     
     @classmethod
     def renderListsToSelect(cls, toPickList, alreadyPickedList, name, value):
