@@ -1,7 +1,0 @@
-#Mon Jun 01 05:04:58 GMT 2009
-eclipse.preferences.version=1
-encoding//src/alaska/settings.py=ISO-8859-1
-encoding//src/alaska/teikningar/admin.py=UTF-8
-encoding//src/alaska/teikningar/models.py=UTF-8
-encoding//src/alaska/teikningar/sql/teikning.sql=UTF-8
-encoding//src/alaska/tileCutter/seadragon.py=ISO-8859-1
