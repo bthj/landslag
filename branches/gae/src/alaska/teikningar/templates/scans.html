@@ -1,0 +1,86 @@
+{% if scans %}
+<style type="text/css">
+	#scan-wrapper {
+		position:relative; 
+		top:0; 
+		left:0;
+	}
+	#scan-thumbs {
+		position:absolute; 
+		top:0; 
+		left:0;
+	}
+	#scan-thumbs img {
+		cursor: pointer;
+		padding: 1em;
+		margin-bottom: 1em;
+	}
+	#scan-dzi {
+		margin-left:15em; 
+		/* width: 1024px; */ 
+		/* height: 768px; */
+		width: 80%;
+		height: 80%;  
+		background-color: Black;
+	}
+	.active-scan {
+		border: 5px solid black;
+	}
+	.inactive-scan {
+		border: 5px solid lightgray;
+	}
+</style>
+
+<div id="scan-wrapper">
+
+<div id="scan-thumbs"></div>
+
+<div id="scan-dzi"></div>
+
+</div>
+
+<script type="text/javascript">
+var scanNames = [ {% for scan in scans %}'{{ scan.scan }}',{% endfor %} ]
+var thumbsDiv = document.getElementById('scan-thumbs');
+var dziDiv = document.getElementById('scan-dzi');
+var viewer = null;
+
+function doOpen( scanName, anchor ) {
+	if( anchor ) {
+		window.location.hash = "#" + scanName;
+	}
+	
+	var xmlPath = "/site_media/dzi/generated_images/" + scanName + ".dzi";
+	viewer.openDzi(xmlPath);
+
+	$("#scan-wrapper img").removeClass("active-scan").addClass("inactive-scan");
+	$("#scan-wrapper img[src$=/site_media/thumb/" + scanName +".jpg]").removeClass("inactive-scan").addClass("active-scan");
+}
+function seadragonInit() {
+	viewer = new Seadragon.Viewer(dziDiv);
+	
+	for( s = 0; s < scanNames.length; s++ ) {
+		var image = document.createElement('img');
+		image.src = "/site_media/thumb/" + scanNames[s] + ".jpg"
+	
+		Seadragon.Utils.addEvent(image, "click", Seadragon.Utils.createCallback(image, doOpen, scanNames[s], true));
+		
+		thumbsDiv.appendChild(image);
+	
+		var br = document.createElement('br');
+		thumbsDiv.appendChild(br);
+	}
+
+    // if the page's hash is set, open image with that hash
+    // if there is one. otherwise, just open the first image.
+    // note that if there's a hash, it'll begin with #.
+    var hash = (window.location.hash || " ").substr(1);
+    doOpen(hash || scanNames[0], false);    // don't anchor
+}
+Seadragon.Utils.addEvent(window, "load", seadragonInit);
+</script>
+
+
+<br clear="both" />
+
+{% endif %}
