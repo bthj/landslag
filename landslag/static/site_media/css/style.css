@@ -1,0 +1,44 @@
+body {
+	width:850px;
+	margin:15px auto;
+	font-family: Arial, "MS Trebuchet", sans-serif;
+}
+
+header#page_header {
+	width:100%;
+}
+header h1 {
+	text-indent: -3000px;
+	background: url("../images/ALASKAx150.png") no-repeat scroll center top;
+	height: 150px;
+	margin:0px 0px 30px 0px;
+}
+
+article, body footer {
+	margin-top: 52px;
+}
+
+.reference {
+	vertical-align: super;
+	font-size:xx-small;
+}
+
+article {
+	padding: 0px 15px;
+	
+	-moz-box-shadow: 15px 15px 0px #000;
+	-webkit-box-shadow: 15px 15px 0px #000;
+	-o-box-shadow: 15px 15px 0px #000;
+	box-shadow: 15px 15px 0px #000;
+	
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	
+	border:2px solid #000;
+}
+
+article.video section.video_stream {
+	margin:0px auto 15px auto;
+	text-align:center;
+}
