@@ -25,15 +25,14 @@ article, body footer {
 
 article {
 	padding: 0px 15px;
-	
+	box-shadow: 15px 15px 0px #000;
 	-moz-box-shadow: 15px 15px 0px #000;
 	-webkit-box-shadow: 15px 15px 0px #000;
 	-o-box-shadow: 15px 15px 0px #000;
-	box-shadow: 15px 15px 0px #000;
 	
+	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
-	border-radius: 10px;
 	
 	border:2px solid #000;
 }
